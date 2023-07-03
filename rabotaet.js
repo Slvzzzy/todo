@@ -2,45 +2,45 @@
 const data = [];
 const inputBox = document.getElementById("input-box"),
       taskContainer = document.querySelector(".container");
-let activeEditTask;
+let activeEditTaskIndex;
+const addTask = () => {
+    const text = inputBox.value
+    const newTask = {
+        text,
+        checked: true
+    };
+    data.push(newTask);
+    render()
+}
 const render = () => {
-            const text = inputBox.value
-            const newTask = {
-                text,
-                checked: true
-            };
-            data.push(newTask);
             taskContainer.innerHTML = data.map((el,i) => {
-                    return`<div class="containerForTask"> 
+                if (activeEditTaskIndex === i) {
+                    return `
+                    <div>
+                    <input type="text">
+                    <button class="changeTask"> Apply </button>
+                    </div>
+                    `
+                }
+                else {
+                    return`<div> 
             <div> task: ${el.text}  </div>
             <div onclick="onDeleteTask(${i})"> delete </div>
              <div onclick="onEditTask(${i})"> edit </div>
             </div>`
                 }
+            }
             ).join('')
         inputBox.value = '';
 }
 const onDeleteTask = (i) => {
     data.splice(i,1)
-    const deleteTask = document.querySelector(".containerForTask");
-    deleteTask.remove()
     render()
 }
-console.log(data)
+const onEditTask = (text, i) => {
 
-// if(activeEditTask === index) {
-// //рисуем инпут и кнопку
-//     const input = //
-//         doneButton.onclick = () => {
-//             updateTodo(index,  input.text)
-//         }
-// } else {
-// //рисуем просто текст чекбокс и кнопки
-// }
-//
-//
-//
-// const updateTodo = (text, index) => {
-// //редактирование
-//     render()
-// }
+    render()
+}
+const editTask = (text, index) => {
+    da
+}
