@@ -17,14 +17,15 @@ const render = () => {
                 if (activeEditTaskIndex === i) {
                     return `
                     <div>
-                    <input type="text">
-                    <button class="changeTask"> Apply </button>
+                    <input id="inputText" type="text" value=${el.text} >
+                    <button onclick="editTask(${i})"> Apply </button>
                     </div>
                     `
                 }
                 else {
                     return`<div> 
             <div> task: ${el.text}  </div>
+             <input type="checkbox" checked=${el.checked}>
             <div onclick="onDeleteTask(${i})"> delete </div>
              <div onclick="onEditTask(${i})"> edit </div>
             </div>`
@@ -37,10 +38,13 @@ const onDeleteTask = (i) => {
     data.splice(i,1)
     render()
 }
-const onEditTask = (text, i) => {
-
+const onEditTask = (i) => {
+    activeEditTaskIndex = i
     render()
 }
-const editTask = (text, index) => {
-    da
+const editTask = ( index) => {
+    const editTaskText = taskContainer.querySelector('#inputText')
+    data[index].text = editTaskText.value
+    activeEditTaskIndex = null
+    render()
 }
