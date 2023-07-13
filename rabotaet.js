@@ -2,71 +2,79 @@
 const inputBox = document.getElementById("input-box"),
       taskContainer = document.querySelector(".container");
 let activeEditTaskIndex;
-const allTasks = JSON.parse(localStorage.getItem("allTasks")) || []
+const todoTask = JSON.parse(localStorage.getItem("todoTask")) || []
 const saveTaskToLocalStorage = () => {
-    localStorage.setItem('allTasks', JSON.stringify(allTasks))
+    localStorage.setItem('todoTask', JSON.stringify(todoTask))
 }
-
-const addTask = () => {
+window.onload = () => {
+    render();
+}
+const task = () => {
     const text = inputBox.value
     const newTask = {
         text,
         checked: true
     };
-    allTasks.push(newTask);
+    todoTask.push(newTask);
     render()
 }
 const render = () => {
-             allTasks.map((addTask,i) => {
+    while(taskContainer.firstChild){ // пишем цикл для того, чтобы не дублировался первый элемент
+        taskContainer.removeChild(taskContainer.firstChild);// удаляем дочерный элемент контента(первого ребенка)
+    }
+             todoTask.map(({text, checked},i) => {
                 if (activeEditTaskIndex === i) {
-                   createEditTask(addTask,i)
+                   createEditTask({text, checked},i)
                 }
                 else {
-                    creatActiveTask(addTask,i)
+                    creatActiveTask({text, checked},i)
                 }
             } )
             inputBox.value = '';
             saveTaskToLocalStorage()
+            saveCheckBoxToLocalStorage()
 }
 
-const createEditTask = (addTask,i) => {
-    const div1 = document.createElement('div'),
-          input = document.createElement('input'),
-          button = document.createElement('button')
-    input.id = 'inputText'
-    input.type = 'text'
-    input.value =  addTask.text
-    button.innerHTML = 'Apply'
-    button.onclick = function () { editTask(i) }
-    div1.appendChild(input)
-    div1.appendChild(button)
-    taskContainer.appendChild(div1)
+const createEditTask = ({text, checked},i) => {
+    const
+          containerDiv = document.createElement('div'),
+          editInput = document.createElement('input'),
+          editButton = document.createElement('button')
+    editInput.id = 'inputText'
+    editInput.type = 'text'
+    editInput.value =  {text, checked}.text
+    editButton.innerHTML = 'Apply'
+    editButton.onclick = function () { editTask(i) }
+    containerDiv.appendChild(editInput)
+    containerDiv.appendChild(editButton)
+    taskContainer.appendChild(containerDiv)
 }
-const creatActiveTask = (addTask,i) => {
-    const div2 = document.createElement('div'),
-          div3 = document.createElement('div'),
-          div4 = document.createElement('div'),
-          div5 = document.createElement('div'),
-          input2 = document.createElement('input')
-    div3.innerHTML = `task: ${addTask.text}`
-    input2.onclick = function () { editCheckBox(i) }
-    input2.id = 'checkedStorage'
-    input2.type = 'checkbox'
-    input2.checked = addTask.checked
-    div4.onclick = function () { onDeleteTask(i) }
-    div4.innerHTML = 'delete'
-    div5.onclick = function () { onEditTask(i) }
-    div5.innerHTML = 'edit'
-    div2.appendChild(div3)
-    div2.appendChild(input2)
-    div2.appendChild(div4)
-    div2.appendChild(div5)
-    taskContainer.appendChild(div2)
+const creatActiveTask = ({text, checked},i) => {
+    const
+          containerDivMane = document.createElement('div'),
+          checkBoxInput = document.createElement('input'),
+          containerDivTask = document.createElement('div'),
+          containerEditButton = document.createElement('button'),
+          containerDeleteButton = document.createElement('button')
+    containerDivTask.innerHTML = `task: ${{text, checked}.text}`
+    checkBoxInput.onclick = function () { editCheckBox(i) }
+    checkBoxInput.id = 'checkedStorage'
+    checkBoxInput.type = 'checkbox'
+    checkBoxInput.checked = {text, checked}.checked
+    containerDeleteButton.onclick = function () { onDeleteTask(i) }
+    containerDeleteButton.innerHTML = 'delete'
+    containerEditButton.onclick = function () { onEditTask(i) }
+    containerEditButton.innerHTML = 'edit'
+    containerDivMane.appendChild(containerDivTask)
+    containerDivMane.appendChild(containerDeleteButton)
+    containerDivMane.appendChild( containerEditButton)
+    containerDivMane.appendChild( checkBoxInput)
+    taskContainer.appendChild( containerDivMane)
 
 }
 
 const onDeleteTask = (i) => {
-    allTasks.splice(i,1)
+    todoTask.splice(i,1)
     render()
 
 }
@@ -76,12 +84,17 @@ const onEditTask = (i) => {
 }
 const editTask = (i) => {
     const editTaskText = taskContainer.querySelector('#inputText')
-    allTasks[i].text = editTaskText.value
+    todoTask[i].text = editTaskText.value
     activeEditTaskIndex = null
     render()
 }
 const editCheckBox =(i) => {
     const editTaskChecked = taskContainer.querySelector('#checkedStorage')
-    allTasks[i].checked = editTaskChecked.checked
+    todoTask[i].checked = editTaskChecked.checked
     saveTaskToLocalStorage()
+}
+
+const editTaskCheckBox = JSON.parse(localStorage.getItem("editTaskCheckBox")) || []
+const saveCheckBoxToLocalStorage = () => {
+    localStorage.setItem('editTaskCheckBox', JSON.stringify(editTaskCheckBox))
 }
